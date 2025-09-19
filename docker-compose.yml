@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8' # Obsolete, removed to avoid confusion
 
 services:
   db:
@@ -30,13 +30,15 @@ services:
   web:
     build: .
     command: >
-      sh -c "python manage.py migrate &&
+      sh -c "mkdir -p /app/logs &&
+             python manage.py migrate &&
              python manage.py collectstatic --noinput &&
              gunicorn dsi_mobil_backend.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
       - media_volume:/app/media
+      - logs_volume:/app/logs
     ports:
       - "8001:8000"
     environment:
@@ -99,3 +101,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  logs_volume:
